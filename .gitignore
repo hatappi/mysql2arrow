@@ -1,0 +1,5 @@
+*.bundle
+*.o
+.sitearchdir.time
+Makefile
+mkmf.log

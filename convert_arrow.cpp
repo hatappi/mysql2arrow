@@ -5,9 +5,11 @@
 #include <mysql2_ext.h>
 #include <mysql_arrow.h>
 #include <arrow-glib/record-batch.h>
+#include <rbgobject.h>
 
 // res => Mysql2::Result
-GArrowRecordBatch * convert_arrow (VALUE self, VALUE res) {
+/*
+VALUE convert_arrow (VALUE self, VALUE res) {
   mysql2_result_wrapper * wrapper;
   Data_Get_Struct(res, mysql2_result_wrapper, wrapper);
 
@@ -16,8 +18,11 @@ GArrowRecordBatch * convert_arrow (VALUE self, VALUE res) {
   auto record_batch = GARROW_RECORD_BATCH(g_object_new(GARROW_TYPE_RECORD_BATCH,
                                      "record-batch", &batch,
                                      NULL));
-  return record_batch;
+  return GOBJ2RVAL(record_batch);
+}*/
 
+VALUE convert_arrow (VALUE self, VALUE res) {
+  return res;
 }
 
 extern "C" {
