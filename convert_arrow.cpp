@@ -8,7 +8,6 @@
 #include <rbgobject.h>
 
 // res => Mysql2::Result
-/*
 VALUE convert_arrow (VALUE self, VALUE res) {
   mysql2_result_wrapper * wrapper;
   Data_Get_Struct(res, mysql2_result_wrapper, wrapper);
@@ -19,10 +18,6 @@ VALUE convert_arrow (VALUE self, VALUE res) {
                                      "record-batch", &batch,
                                      NULL));
   return GOBJ2RVAL(record_batch);
-}*/
-
-VALUE convert_arrow (VALUE self, VALUE res) {
-  return res;
 }
 
 extern "C" {
