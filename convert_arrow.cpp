@@ -7,10 +7,11 @@
 #include <arrow-glib/record-batch.h>
 #include <rbgobject.h>
 
+
 // res => Mysql2::Result
-VALUE convert_arrow (VALUE self, VALUE res) {
+VALUE convert_arrow (VALUE self) {
   mysql2_result_wrapper * wrapper;
-  Data_Get_Struct(res, mysql2_result_wrapper, wrapper);
+  Data_Get_Struct(self, mysql2_result_wrapper, wrapper);
 
   auto batch = convertArrow(wrapper->result, 3);
 
@@ -22,6 +23,6 @@ VALUE convert_arrow (VALUE self, VALUE res) {
 
 extern "C" {
   void Init_convert_arrow() {
-    rb_define_global_function ("convert_arrow", (VALUE(*)(...))convert_arrow, 1);
+    rb_define_method(rb_const_get(rb_define_module("Mysql2"), rb_intern("Result")), "to_record_batch", (VALUE(*)(...))convert_arrow, 0);
   }
 }
