@@ -9,16 +9,23 @@
 
 
 // res => Mysql2::Result
-VALUE convert_arrow (VALUE self) {
+void convert_arrow (VALUE self) {
   mysql2_result_wrapper * wrapper;
   Data_Get_Struct(self, mysql2_result_wrapper, wrapper);
 
-  auto batch = convertArrow(wrapper->result, 3);
-
-  auto record_batch = GARROW_RECORD_BATCH(g_object_new(GARROW_TYPE_RECORD_BATCH,
+  std::shared_ptr<arrow::RecordBatch> batch;
+  while(1) {
+    batch = convertArrow(wrapper->result, 2);
+    if (batch->num_rows() == 0) {
+      break;
+    }
+    auto record_batch = GARROW_RECORD_BATCH(g_object_new(GARROW_TYPE_RECORD_BATCH,
                                      "record-batch", &batch,
                                      NULL));
-  return GOBJ2RVAL(record_batch);
+    rb_yield(GOBJ2RVAL(record_batch));
+  }
+
+  mysql_data_seek(wrapper->result, 0);
 }
 
 extern "C" {
