@@ -9,7 +9,7 @@
 
 
 // res => Mysql2::Result
-void convert_arrow (int argc, VALUE * argv, VALUE self) {
+VALUE convert_arrow (int argc, VALUE * argv, VALUE self) {
   VALUE opts, block;
 
   auto size = 50;
@@ -36,6 +36,8 @@ void convert_arrow (int argc, VALUE * argv, VALUE self) {
   }
 
   mysql_data_seek(wrapper->result, 0);
+
+  return Qnil;
 }
 
 extern "C" {
