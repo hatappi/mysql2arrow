@@ -9,13 +9,23 @@
 
 
 // res => Mysql2::Result
-void convert_arrow (VALUE self) {
+void convert_arrow (int argc, VALUE * argv, VALUE self) {
+  VALUE opts, block;
+
+  auto size = 50;
+  if (rb_scan_args(argc, argv, "01&", &opts, &block) > 0) {
+    auto v = rb_hash_aref(opts, ID2SYM(rb_intern("size")));
+    if (RTEST(v)) {
+      size = NUM2INT(v);
+    }
+  }
+
   mysql2_result_wrapper * wrapper;
   Data_Get_Struct(self, mysql2_result_wrapper, wrapper);
 
   std::shared_ptr<arrow::RecordBatch> batch;
   while(1) {
-    batch = convertArrow(wrapper->result, 2);
+    batch = convertArrow(wrapper->result, size);
     if (batch->num_rows() == 0) {
       break;
     }
@@ -30,6 +40,6 @@ void convert_arrow (VALUE self) {
 
 extern "C" {
   void Init_convert_arrow() {
-    rb_define_method(rb_const_get(rb_define_module("Mysql2"), rb_intern("Result")), "to_record_batch", (VALUE(*)(...))convert_arrow, 0);
+    rb_define_method(rb_const_get(rb_define_module("Mysql2"), rb_intern("Result")), "each_record_batch", (VALUE(*)(...))convert_arrow, -1);
   }
 }
