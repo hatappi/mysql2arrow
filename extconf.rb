@@ -11,4 +11,4 @@ $LIBS << " -larrow"
 
 have_type('my_bool', "mysql/mysql.h")
 
-create_makefile('convert_arrow')
+create_makefile('mysql2_arrow')

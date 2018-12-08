@@ -22,6 +22,7 @@ VALUE convert_arrow (int argc, VALUE * argv, VALUE self) {
 
   mysql2_result_wrapper * wrapper;
   Data_Get_Struct(self, mysql2_result_wrapper, wrapper);
+  mysql_data_seek(wrapper->result, 0);
 
   std::shared_ptr<arrow::RecordBatch> batch;
   while(1) {
@@ -35,13 +36,11 @@ VALUE convert_arrow (int argc, VALUE * argv, VALUE self) {
     rb_yield(GOBJ2RVAL(record_batch));
   }
 
-  mysql_data_seek(wrapper->result, 0);
-
   return Qnil;
 }
 
 extern "C" {
-  void Init_convert_arrow() {
+  void Init_mysql2_arrow() {
     rb_define_method(rb_const_get(rb_define_module("Mysql2"), rb_intern("Result")), "each_record_batch", (VALUE(*)(...))convert_arrow, -1);
   }
 }
